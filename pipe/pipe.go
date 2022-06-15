@@ -1,12 +1,14 @@
 package pipe
 
 import (
+	"bufio"
 	"io"
 )
 
 type Pipe struct {
 	reader io.Reader
 	writer io.Writer
+	buffer *bufio.Writer
 }
 
 func (p *Pipe) Close() error {
@@ -24,7 +26,7 @@ func (p *Pipe) Read(data []byte) (int, error) {
 }
 
 func (p *Pipe) Write(data []byte) (int, error) {
-	return p.writer.Write(data)
+	return p.buffer.Write(data)
 }
 
 func New() (*Pipe, error) {
@@ -33,5 +35,6 @@ func New() (*Pipe, error) {
 	return &Pipe{
 		reader: r,
 		writer: w,
+		buffer: bufio.NewWriter(w),
 	}, nil
 }
